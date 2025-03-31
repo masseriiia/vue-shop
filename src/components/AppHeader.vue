@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import AppButton from '@/components/AppButton.vue'
 </script>
 
@@ -8,7 +7,7 @@ import AppButton from '@/components/AppButton.vue'
     <div class="container">
       <div class="content">
         <nav class="nav-section">
-          <h1 class="logo">Vue Shopping</h1>
+          <h1 class="logo"><RouterLink to="">Vue Shopping</RouterLink></h1>
           <ul class="menu">
             <li class="menu-item">
               <RouterLink to="/">Товары</RouterLink>
@@ -41,7 +40,10 @@ import AppButton from '@/components/AppButton.vue'
     font-weight: 700;
     font-size: 48px;
     line-height: 133%;
-    color: var(--ui-accent);
+
+    a {
+      color: var(--ui-accent);
+    }
   }
 
   .content {
