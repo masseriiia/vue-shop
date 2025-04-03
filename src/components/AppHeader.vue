@@ -1,5 +1,15 @@
 <script setup lang="ts">
 import AppButton from '@/components/AppButton.vue'
+import { useCurrentUserStore } from '@/stores/currentUser.ts'
+import { storeToRefs } from 'pinia'
+import { onMounted } from 'vue'
+
+const userStore = useCurrentUserStore()
+const { user, isLoggedIn } = storeToRefs(userStore)
+
+onMounted(async () => {
+  await userStore.fetchCurrentUser()
+})
 </script>
 
 <template>
@@ -7,21 +17,29 @@ import AppButton from '@/components/AppButton.vue'
     <div class="container">
       <div class="content">
         <nav class="nav-section">
-          <h1 class="logo"><RouterLink to="">Vue Shopping</RouterLink></h1>
+          <h1 class="logo"><RouterLink to="/">Vue Shopping</RouterLink></h1>
           <ul class="menu">
             <li class="menu-item">
-              <RouterLink to="/">Товары</RouterLink>
+              <RouterLink to="/catalog">Товары</RouterLink>
             </li>
             <li class="menu-item">
-              <RouterLink to="/">
+              <RouterLink to="/shops">
                 Магазины
               </RouterLink>
             </li>
           </ul>
         </nav>
-        <AppButton option="base">
-          Войти
-        </AppButton>
+        <div class="avatar" v-if="isLoggedIn">
+          <RouterLink to="/profile">
+            <p>{{ user?.name ? `${user.name.split(" ")[0][0]}${user.name.split(" ")[1][0]}` : '' }}</p>
+            <p></p>
+          </RouterLink>
+        </div>
+        <RouterLink v-else  to="/auth">
+          <AppButton option="base">
+            Войти
+          </AppButton>
+        </RouterLink>
       </div>
     </div>
   </header>
@@ -55,7 +73,7 @@ import AppButton from '@/components/AppButton.vue'
   .nav-section {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 26px;
   }
 
   .menu {
@@ -63,7 +81,8 @@ import AppButton from '@/components/AppButton.vue'
   }
 
   .menu-item {
-    padding: 8px 16px 4px 16px;
+    display: flex;
+    align-items: center;
     width: 120px;
     height: 40px;
     font-family: var(--font-family);
@@ -76,10 +95,26 @@ import AppButton from '@/components/AppButton.vue'
     transition: color 0.3s ease-in-out;
 
     a {
+      padding: 8px 16px 4px 16px;
       color: #757575;
     }
   }
   .menu-item a:hover {
     color: #595959;
+  }
+
+  .avatar {
+    padding: 4px 6px;
+    font-family: var(--font-family);
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 156%;
+
+    border-radius: 100%;
+    background-color: var(--ui-bluish);
+
+    a {
+      color: #0f172a;
+    }
   }
 </style>

@@ -13,7 +13,7 @@
 <style scoped>
 .base {
   padding: 12px;
-  width: 120px;
+  min-width: 120px;
   height: 40px;
   border-radius: 8px;
   color: var(--ui-light-gray);
