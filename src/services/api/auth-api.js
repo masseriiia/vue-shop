@@ -1,7 +1,6 @@
 import { setToken } from '@/services/api/auth-token-service.js'
 import { instance } from '@/services/api/base-api.js'
 import { useCurrentUserStore } from '@/stores/currentUser.js'
-import { storeToRefs } from 'pinia'
 
 export function startSession(email, password) {
   const userStore = useCurrentUserStore();
