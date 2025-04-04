@@ -44,7 +44,7 @@
   font-family: var(--font-family);
   font-weight: 600;
   font-size: 14px;
-  line-height: 100%;
+  line-height: 14px;
   a {
     transition: color 0.3s ease-in-out;
     color: var(--ui-gray);
@@ -52,7 +52,7 @@
 }
 
 .footer-link a:hover {
-  color: #101210;
+  color: var(--ui-black);
 }
 
 .social-icons {

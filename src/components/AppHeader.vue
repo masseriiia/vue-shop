@@ -57,7 +57,7 @@ onMounted(async () => {
     font-family: var(--second-family);
     font-weight: 700;
     font-size: 48px;
-    line-height: 133%;
+    line-height: 64px;
 
     a {
       color: var(--ui-accent);
@@ -108,13 +108,12 @@ onMounted(async () => {
     font-family: var(--font-family);
     font-weight: 600;
     font-size: 18px;
-    line-height: 156%;
-
+    line-height: 28px;
     border-radius: 100%;
     background-color: var(--ui-bluish);
 
     a {
-      color: #0f172a;
+      color: var(--ui-dark-blue);
     }
   }
 </style>

@@ -36,7 +36,7 @@
   font-family: var(--font-family);
   font-weight: 600;
   font-size: 18px;
-  line-height: 156%;
-  color: #000;
+  line-height: 28px;
+  color: var(--ui-black);
 }
 </style>

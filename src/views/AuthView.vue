@@ -118,8 +118,8 @@ onMounted(async () => {
   font-family: var(--font-family);
   font-weight: 400;
   font-size: 16px;
-  line-height: 140%;
-  color: #1e1e1e;
+  line-height: 22px;
+  color: var(--ui-dark-gray);
 }
 
 .form-group-input {
@@ -132,8 +132,8 @@ onMounted(async () => {
   font-family: var(--font-family);
   font-weight: 400;
   font-size: 16px;
-  line-height: 140%;
-  color: #1e1e1e;
+  line-height: 22px;
+  color: var(--ui-dark-gray);
   opacity: 0.33;
 }
 
