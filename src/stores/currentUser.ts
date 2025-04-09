@@ -1,35 +1,37 @@
+import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { getCurrentUserData } from '@/services/api/user-api.js'
-import { deleteToken, getAuthToken } from '@/services/api/auth-token-service'
+import { getCurrentUserData } from '@/services/api/userApi.js'
+import { deleteToken } from '@/services/api/authTokenService'
 
-export const useCurrentUserStore = defineStore('user', {
-  state: () => ({
-    user: null,
-    isLoggedIn: !!getAuthToken(),
-    isAdmin: false,
-    message: ''
-  }),
-  actions: {
-     async fetchCurrentUser() {
-      try {
-        const data = await getCurrentUserData()
-        this.user = data
-        this.isLoggedIn = !!data
-        if(this.user.role === "admin") {
-          this.isAdmin = true
-        }
-      } catch (e) {
-        console.log(e)
-        this.isLoggedIn = false
-      }
-    },
-    logout() {
-      if(this.user?.role === "admin") {
-        this.isAdmin = false
-      }
-      this.user = null
-      this.isLoggedIn = false
-      deleteToken()
+interface UserProps {
+  id: number
+  email: string
+  name: string
+  role: string
+}
+
+export const useCurrentUserStore = defineStore('user', () => {
+  const user = ref<UserProps | null>(null);
+  const isLoading = ref(false)
+
+  const isLoggedIn = computed(() => !!user.value)
+  const isAdmin = computed(() => user.value?.role === 'admin')
+
+  async function fetchCurrentUser() {
+    isLoading.value = true 
+    try {
+      const data = await getCurrentUserData()
+      user.value = data
+      console.log(123)
+    } finally {
+      isLoading.value = false  
     }
   }
+
+  function logout() {
+    user.value = null
+    deleteToken()
+  }
+
+  return { user, isLoggedIn, isAdmin, fetchCurrentUser, logout, isLoading }
 })
