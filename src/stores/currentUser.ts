@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
+import { useToast } from 'vue-toastification'
 import { getCurrentUserData } from '@/services/api/userApi.js'
 import { deleteToken } from '@/services/api/authTokenService'
 
@@ -9,6 +10,8 @@ interface UserProps {
   name: string
   role: string
 }
+
+const toast = useToast();
 
 export const useCurrentUserStore = defineStore('user', () => {
   const user = ref<UserProps | null>(null);
@@ -22,8 +25,9 @@ export const useCurrentUserStore = defineStore('user', () => {
     try {
       const data = await getCurrentUserData()
       user.value = data
-      console.log(123)
-    } finally {
+    } catch(e) {
+      toast.error(e.message)
+    }finally {
       isLoading.value = false  
     }
   }

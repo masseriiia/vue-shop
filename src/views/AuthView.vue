@@ -5,7 +5,7 @@ import { useToast } from "vue-toastification";
 import { useRouter } from 'vue-router'
 import AppButton from '@/components/AppButton.vue'
 import { startSession } from '@/services/api/authApi.js'
-import { onMounted, reactive } from 'vue'
+import { reactive } from 'vue'
 import { useCurrentUserStore } from '@/stores/currentUser.ts'
 import Input from "@/components/Input.vue";
 
@@ -18,19 +18,11 @@ const auth = reactive({
   password: '',
 })
 
-const showToast = (message: string) => {
-  if (isLoggedIn.value) {
-    toast.success(message);
-  } else {
-    toast.error(message);
-  }
-};
-
 const onSubmitButton = async () => {
   try{
     await startSession(auth.email, auth.password)
     await userStore.fetchCurrentUser()
-    await showToast('Вы успешно авторизовались')
+    toast.success('Вы успешно авторизовались');
     if (isLoggedIn.value) {
       router.push('/catalog');
     }
@@ -38,7 +30,7 @@ const onSubmitButton = async () => {
     auth.password = ''
   } catch (error) {
     if(axios.isAxiosError(error) && error.status === 400 && error.response.data.message) {
-      showToast(error.response.data.message)
+      toast.error(error.response.data.message);
     }
   }
 }
