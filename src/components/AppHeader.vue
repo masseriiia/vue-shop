@@ -37,7 +37,7 @@ const getNameLastName = computed(() => {
           </RouterLink>
         </div>
         <RouterLink v-else  to="/auth">
-          <AppButton option="base">
+          <AppButton>
             Войти
           </AppButton>
         </RouterLink>

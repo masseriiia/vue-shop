@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useToast } from 'vue-toastification'
 import AuthView from '@/views/AuthView.vue'
 import AdminView from '@/views/AdminView.vue'
 import CatalogView from '@/views/CatalogView.vue'
@@ -8,6 +9,8 @@ import ErrorView from '@/views/ErrorView.vue'
 import { useCurrentUserStore } from '@/stores/currentUser.ts'
 import { storeToRefs } from 'pinia'
 import { getAuthToken } from '@/services/api/authTokenService'
+
+const toast = useToast();
 
 const routes = [
   {
@@ -65,7 +68,14 @@ router.beforeEach(async() => {
   if(isLoggedIn.value) return true
   
   if(getAuthToken()) {
-    await userStore.fetchCurrentUser()
+    try {
+      await userStore.fetchCurrentUser()
+    } catch(error) {
+      if(error instanceof Error) {
+        toast.error(error.message)
+      return {name: 'Auth'}
+      }
+    }
   }
 })
 

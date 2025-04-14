@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { AxiosRequestConfig } from 'axios'
+import type { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios'
 import { deleteToken, getAuthToken } from './authTokenService'
 
 export const instance = axios.create({
@@ -14,7 +14,7 @@ instance.interceptors.request.use((config: AxiosRequestConfig) => {
       'Authorization': `Bearer ${token}`
     }
   }
-  return config
+  return config as InternalAxiosRequestConfig;
 }, (error) => {
   return Promise.reject(error)
 })

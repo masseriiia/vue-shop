@@ -9,11 +9,7 @@ export async function getCurrentUserData() {
     return
   }
 
-  try {
-    const response = await instance.get('/users/me')
-    return response.data
-  } catch (error) {
-    throw error
-  }
+  const response = await instance.get('/users/me')
+  return response.data
 }
 

@@ -1,35 +1,49 @@
 <script setup lang="ts">
 
-const props = defineProps<{
-    disabled: boolean
-    type: string
-}>()
+interface Props {
+  type?: string
+  disabled?: boolean
+  name?: string
+  error?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  type: 'text'
+})
 
 const model = defineModel<string>('data')
 
 </script>
 
 <template>
-    <input :disabled="disabled" :class="[disabled ? 'form-input-auth' : 'form-input'] " v-model="model" :type="type"/>
+    <input :disabled="props.disabled" :class="[{'input-error': error}, 'input']" v-model="model" :name="name" :type="type"/>
 </template>
 
 <style scoped>
 
-.form-input {
+.input {
   padding: 12px 16px;
-  border: 1px solid #d9d9d9;
-  font-size: 14px;
+  border: 1px solid var(--ui-pale-gray);
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 16px;
+  color: #000;
   border-radius: 8px;
 }
 
-.form-input:focus {
-    outline: 1px solid var(--ui-gray);
+.input:focus {
+  outline: 1px solid var(--ui-gray);
 }
 
-.form-input-auth {
+.input:disabled {
   padding: 12px 16px;
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--ui-pale-gray);
   border-radius: 8px;
   opacity: 0.33;
+}
+
+.input-error {
+  border: 1px solid var(--ui-red);
 }
 </style>
