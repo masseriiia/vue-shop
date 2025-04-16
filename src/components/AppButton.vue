@@ -1,8 +1,14 @@
 <script setup lang="ts">
-const props = defineProps<{
+
+interface AppButtonProps {
   disabled?: boolean
   loading?: boolean
-}>()
+}
+
+const props = withDefaults(defineProps<AppButtonProps>(), {
+  disabled: false,
+  loading: false
+})
 
 </script>
 
@@ -44,7 +50,13 @@ const props = defineProps<{
 }
 
 .loading {
+  opacity: 0.5;
+  border: 1px solid var(--ui-accent-active);
   animation: loading-animation 2s infinite;
+}
+
+.loading:focus {
+  border: 1px solid var(--ui-accent-active);
 }
 
 @keyframes loading-animation {

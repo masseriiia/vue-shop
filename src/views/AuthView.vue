@@ -1,25 +1,23 @@
 <script setup lang="ts">
 import axios from "axios";
+import { computed, reactive, ref } from 'vue'
 import { storeToRefs } from "pinia";
 import { useToast } from "vue-toastification";
 import { useRouter } from 'vue-router'
 import AppButton from '@/components/AppButton.vue'
 import { startSession } from '@/services/api/authApi.ts'
-import { computed, reactive, ref } from 'vue'
 import { useCurrentUserStore } from '@/stores/currentUser.ts'
-import Input from "@/components/Input.vue";
+import Input from "@/components/AppInput.vue";
 
 const toast = useToast();
 const userStore = useCurrentUserStore()
-const { isLoggedIn } = storeToRefs(userStore)
+const { user, isLoggedIn } = storeToRefs(userStore)
 const router = useRouter();
 const auth = reactive({
   email: '',
   password: '',
 })
-const showEmailError = ref(false)
-const showPasswordError = ref(false)
-const isDisable = ref(false)
+const isLoading = ref(false)
 
 const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -27,26 +25,22 @@ const emailErrorText = computed(() => {
   const email = auth.email.trim();
   if (email.length === 0) return 'Это поле обязательно'
   if (!validateEmail(email)) return 'Неверный формат email'
-  return ''
+  return null
 })
 
-const validate = () => {
-  const isEmailValid = auth.email.length > 0 && validateEmail(auth.email)
-  const isPasswordValid = auth.password.length > 0
-  if(auth.email.length === 0) {
-      showEmailError.value = true
-    }
-    if(auth.password.length === 0) {
-      showPasswordError.value = true
-    }
-  return isEmailValid && isPasswordValid
-}
+const passwordErrorText = computed(() => {
+  const password = auth.password
+  if (password.length === 0) return 'Это поле обязательно'
+  return null
+})
+
+const isSubmitDisabled = computed(() => {
+  return !!emailErrorText.value || !!passwordErrorText.value
+})
 
 const handleLoginSubmit = async () => {
-  if(!validate()) return 
-
+  isLoading.value = true
   try{
-    isDisable.value = true
     await startSession(auth.email, auth.password)
     await userStore.fetchCurrentUser()
     toast.success('Вы успешно авторизовались');
@@ -59,18 +53,11 @@ const handleLoginSubmit = async () => {
   } catch (error) {
     if(axios.isAxiosError(error) && error.status === 400 && error.response?.data.message) {
       toast.error(error.response?.data.message);
+    } else if(error instanceof Error)  {
+      toast.error(error.message)
     }
-  }finally {
-    isDisable.value = false
-  }
-}
-
-const handleInput = (e: Event) => {
-  const target = e.target as HTMLInputElement
-  if(target.name === 'email') {
-    showEmailError.value = auth.email.length === 0 || !validateEmail(auth.email)
-  } else if(target.name === 'password') {
-    showPasswordError.value = auth.password.length === 0
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -81,12 +68,12 @@ const handleLogout = () => {
 </script>
 
 <template>
-  <template v-if="userStore.isLoggedIn">
+  <template v-if="isLoggedIn && user">
     <div class="auth">
       <form class="auth-card">
         <div class="auth-field">
           <label class="auth-field-label-auth" for="password">Вы авторизованы как</label>
-          <Input disabled v-model:data="userStore.user.email" type="text"/>
+          <Input disabled v-model:data="user.email" type="text"/>
         </div>
         <AppButton @click="handleLogout">Выйти из аккаунта</AppButton>
       </form>
@@ -98,21 +85,13 @@ const handleLogout = () => {
       <form class="auth-card" @submit.prevent="handleLoginSubmit">
         <div class="auth-field">
           <label class="auth-field-label" for="email">Email</label>
-          <Input @input="handleInput" :disabled="false" name="email" :error="showEmailError" v-model:data="auth.email"/>
-          <div class="error">
-            <p v-show="showEmailError" class="error-text">
-              {{ emailErrorText }}
-            </p>
-          </div>
+          <Input name="email" :error="emailErrorText" v-model:data="auth.email"/>
         </div>
         <div class="auth-field">
           <label class="auth-field-label" for="password">Пароль</label>
-          <Input @input="handleInput" :disabled="false" name="password" :error="showPasswordError" v-model:data="auth.password" type="password"/>
-          <div class="error">
-            <p v-show="showPasswordError" class="error-text">Это поле обязательно</p>
-          </div>
+          <Input name="password" :error="passwordErrorText" v-model:data="auth.password" type="password"/>
         </div>
-        <AppButton :loading="isDisable" :disabled="isDisable">Войти</AppButton>
+        <AppButton :loading="isLoading" :disabled="isSubmitDisabled">Войти</AppButton>
       </form>
     </div>
   </template>
@@ -131,7 +110,7 @@ const handleLogout = () => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 16px;
+  gap: 14px;
   border-radius: 8px;
   width: 100%;
   max-width: 320px;
@@ -141,7 +120,7 @@ const handleLogout = () => {
 .auth-field{
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .auth-field-label {
@@ -159,20 +138,6 @@ const handleLogout = () => {
   line-height: 22px;
   color: var(--ui-dark-gray);
   opacity: 0.33;
-}
-
-.error {
-  position: relative;
-  margin-bottom: 8px;
-}
-
-.error-text {
-  position: absolute;
-  font-family: var(--font-family);
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 117%;
-  color: var(--ui-red);
 }
 
 </style>

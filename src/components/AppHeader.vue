@@ -5,8 +5,11 @@ import { computed } from 'vue'
 
 const userStore = useCurrentUserStore()
 
-const getNameLastName = computed(() => {
-  return userStore.user?.name ? `${userStore.user.name.split(" ")[0][0]}${userStore.user.name.split(" ")[1][0]}` : ''
+const initials = computed(() => {
+  if (!userStore.user?.name) return ''
+  const firstName = userStore.user.name.split(" ")[0][0] || ''
+  const lastName = userStore.user.name.split(" ")[1][0] || ''
+  return `${firstName}${lastName}`
 })
 
 </script>
@@ -32,8 +35,7 @@ const getNameLastName = computed(() => {
         </nav>
         <div class="avatar" v-if="userStore.isLoggedIn">
           <RouterLink to="/profile">
-            <p>{{ getNameLastName }}</p>
-            <p></p>
+            <p>{{ initials }}</p>
           </RouterLink>
         </div>
         <RouterLink v-else  to="/auth">

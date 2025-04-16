@@ -3,7 +3,7 @@ import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import { useCurrentUserStore } from './stores/currentUser'
 import { storeToRefs } from 'pinia'
-import Loading from './components/Loading.vue'
+import Loading from './components/AppLoading.vue'
 
 const userStore = useCurrentUserStore()
 const { isLoading } = storeToRefs(userStore)
