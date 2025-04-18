@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router'
 import AppButton from '@/components/AppButton.vue'
 import { startSession } from '@/services/api/authApi.ts'
 import { useCurrentUserStore } from '@/stores/currentUser.ts'
-import Input from "@/components/AppInput.vue";
+import AppInput from "@/components/AppInput.vue";
 
 const toast = useToast();
 const userStore = useCurrentUserStore()
@@ -17,6 +17,7 @@ const auth = reactive({
   email: '',
   password: '',
 })
+const tuched = reactive({email: false, password: false})
 const isLoading = ref(false)
 
 const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -73,7 +74,7 @@ const handleLogout = () => {
       <form class="auth-card">
         <div class="auth-field">
           <label class="auth-field-label-auth" for="password">Вы авторизованы как</label>
-          <Input disabled v-model:data="user.email" type="text"/>
+          <AppInput disabled v-model:data="user.email" type="text"/>
         </div>
         <AppButton @click="handleLogout">Выйти из аккаунта</AppButton>
       </form>
@@ -85,11 +86,11 @@ const handleLogout = () => {
       <form class="auth-card" @submit.prevent="handleLoginSubmit">
         <div class="auth-field">
           <label class="auth-field-label" for="email">Email</label>
-          <Input name="email" :error="emailErrorText" v-model:data="auth.email"/>
+          <AppInput name="email" :error="tuched.email ? emailErrorText : null" v-model:data="auth.email" v-model:tuched="tuched.email"/>
         </div>
         <div class="auth-field">
           <label class="auth-field-label" for="password">Пароль</label>
-          <Input name="password" :error="passwordErrorText" v-model:data="auth.password" type="password"/>
+          <AppInput name="password" :error="tuched.password ? passwordErrorText : null" v-model:data="auth.password" v-model:tuched="tuched.password" type="password"/>
         </div>
         <AppButton :loading="isLoading" :disabled="isSubmitDisabled">Войти</AppButton>
       </form>

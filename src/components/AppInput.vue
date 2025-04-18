@@ -5,6 +5,8 @@ interface AppInputProps {
   disabled?: boolean
   name?: string
   error?: string | null
+  tuchedEmail?: boolean
+  tuchedPassword?: boolean
 }
 
 const props = withDefaults(defineProps<AppInputProps>(), {
@@ -13,11 +15,16 @@ const props = withDefaults(defineProps<AppInputProps>(), {
 })
 
 const model = defineModel<string>('data')
+const tuched = defineModel<boolean>('tuched')
+
+const onBlur = () => {
+  tuched.value = true
+}
 
 </script>
 
 <template>
-    <input :disabled="disabled" :class="[{'input-error': !!error}, 'input']" v-model="model" :name="name" :type="type"/>
+    <input @blur="onBlur" :disabled="disabled" :class="[{'input-error': error}, 'input']" v-model="model" :name="name" :type="type"/>
     <div class="error">
       <p v-show="error" class="error-text">
       {{ error }}

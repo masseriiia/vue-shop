@@ -3,7 +3,7 @@ import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import { useCurrentUserStore } from './stores/currentUser'
 import { storeToRefs } from 'pinia'
-import Loading from './components/AppLoading.vue'
+import AppLoading from './components/AppLoading.vue'
 
 const userStore = useCurrentUserStore()
 const { isLoading } = storeToRefs(userStore)
@@ -12,7 +12,7 @@ const { isLoading } = storeToRefs(userStore)
 
 <template>
   <template v-if="isLoading">
-    <Loading  />
+    <AppLoading  />
   </template>
   <template v-else>
     <div class="app-container">
