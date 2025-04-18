@@ -1,15 +1,4 @@
 @font-face {
-  font-family: 'Caveat';
-  src: url('../fonts/Caveat-Bold.eot');
-  src: local('Caveat Bold'), local('Caveat-Bold'),
-  url('../fonts/Caveat-Bold.eot?#iefix') format('embedded-opentype'),
-  url('../fonts/Caveat-Bold.woff') format('woff'),
-  url('../fonts/Caveat-Bold.ttf') format('truetype');
-  font-weight: bold;
-  font-style: normal;
-}
-
-@font-face {
   font-family: 'Inter';
   src: url('../fonts/Inter-Regular.eot');
   src: local('Inter Regular'), local('Inter-Regular'),

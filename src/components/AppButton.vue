@@ -1,20 +1,32 @@
 <script setup lang="ts">
- const props = defineProps<{
-   option: string
- }>()
+
+interface AppButtonProps {
+  disabled?: boolean
+  loading?: boolean
+}
+
+const props = withDefaults(defineProps<AppButtonProps>(), {
+  disabled: false,
+  loading: false
+})
+
 </script>
 
 <template>
-  <button :class="[option]">
+  <button :disabled="disabled" :class="[{'loading': loading}, 'app-button']">
     <slot></slot>
   </button>
 </template>
 
 <style scoped>
-.base {
+.app-button {
   padding: 12px;
   min-width: 120px;
   height: 40px;
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 16px;
   border-radius: 8px;
   color: var(--ui-light-gray);
   border: 1px solid var(--ui-accent);
@@ -23,12 +35,37 @@
   cursor: pointer;
 }
 
-.base:hover {
+.app-button:hover {
   background: var(--ui-accent-active);
+  border: 1px solid var(--ui-accent-active);
 }
 
-.base:focus {
+.app-button:focus {
   border: 2px solid var(--ui-accent);
   background: var(--ui-accent-active);
 }
+
+.app-button:disabled {
+  opacity: 0.5;
+}
+
+.loading {
+  opacity: 0.5;
+  border: 1px solid var(--ui-accent-active);
+  animation: loading-animation 2s infinite;
+}
+
+.loading:focus {
+  border: 1px solid var(--ui-accent-active);
+}
+
+@keyframes loading-animation {
+  0% {
+    box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.2);
+  }
+  100% {
+    box-shadow: 0 0 0 20px rgba(0, 0, 0, 0);
+  }
+}
+
 </style>

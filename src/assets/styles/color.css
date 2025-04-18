@@ -1,6 +1,5 @@
 :root {
   --font-family: "Inter", sans-serif;
-  --second-family: "Caveat", sans-serif;
 
   --mint-bg: #edf5de;
   --ui-white: #fff;
@@ -15,6 +14,7 @@
   --ui-dark-blue: #0f172a;
   --ui-black: #000000;
   --ui-dark-gray: #1e1e1e;
+  --ui-pale-gray: #d9d9d9;
 
   --mint-bg: #EDF5DE;
 }

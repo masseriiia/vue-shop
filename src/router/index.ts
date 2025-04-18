@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useToast } from 'vue-toastification'
 import AuthView from '@/views/AuthView.vue'
 import AdminView from '@/views/AdminView.vue'
 import CatalogView from '@/views/CatalogView.vue'
@@ -7,7 +8,9 @@ import ShopsView from '@/views/ShopsView.vue'
 import ErrorView from '@/views/ErrorView.vue'
 import { useCurrentUserStore } from '@/stores/currentUser.ts'
 import { storeToRefs } from 'pinia'
-import { getCurrentUserData } from '@/services/api/user-api'
+import { getAuthToken } from '@/services/api/authTokenService'
+
+const toast = useToast();
 
 const routes = [
   {
@@ -58,20 +61,39 @@ const router = createRouter({
   routes
 })
 
+router.beforeEach(async() => {
+  const userStore = useCurrentUserStore()
+  const { isLoggedIn} = storeToRefs(userStore)
+
+  if(isLoggedIn.value) return true
+  
+  if(getAuthToken()) {
+    try {
+      await userStore.fetchCurrentUser()
+    } catch(error) {
+      if(error instanceof Error) {
+        toast.error(error.message)
+      return {name: 'Auth'}
+      }
+    }
+  }
+})
+
 router.beforeEach(async (to) => {
   const userStore = useCurrentUserStore()
-  const { isLoggedIn } = storeToRefs(userStore)
+  const { isLoggedIn, isAdmin} = storeToRefs(userStore)
 
   if (to.meta.requiresAuth && !isLoggedIn.value) {
     return { name: 'Auth' }
   }
 
   if (to.meta.requiresAdmin) {
+
     if (!isLoggedIn.value) {
       return { name: '404' }
     }
-    const data = await getCurrentUserData()
-    if (data.role !== 'admin') {
+
+    if (!isAdmin.value) {
       return { name: '404' }
     }
   }

@@ -1,16 +1,28 @@
 <script setup lang="ts">
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
+import { useCurrentUserStore } from './stores/currentUser'
+import { storeToRefs } from 'pinia'
+import AppLoading from './components/AppLoading.vue'
+
+const userStore = useCurrentUserStore()
+const { isLoading } = storeToRefs(userStore)
+
 </script>
 
 <template>
-  <div class="app-container">
-    <AppHeader/>
-    <main class="main">
-      <RouterView/>
-    </main>
+  <template v-if="isLoading">
+    <AppLoading  />
+  </template>
+  <template v-else>
+    <div class="app-container">
+      <AppHeader />
+      <main class="main">
+        <RouterView/>
+      </main>
     <AppFooter/>
   </div>
+  </template>
 </template>
 
 <style scoped>
