@@ -9,12 +9,12 @@ interface AppInputProps {
   tuchedPassword?: boolean
 }
 
-const props = withDefaults(defineProps<AppInputProps>(), {
+withDefaults(defineProps<AppInputProps>(), {
   type: 'text',
   disabled: false
 })
 
-const model = defineModel<string>('data')
+const model = defineModel<string | null>('data')
 const tuched = defineModel<boolean>('tuched')
 
 const onBlur = () => {

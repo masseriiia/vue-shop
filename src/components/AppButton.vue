@@ -3,17 +3,19 @@
 interface AppButtonProps {
   disabled?: boolean
   loading?: boolean
+  customClass?: string
 }
 
-const props = withDefaults(defineProps<AppButtonProps>(), {
+withDefaults(defineProps<AppButtonProps>(), {
   disabled: false,
-  loading: false
+  loading: false,
+  customClass: ''
 })
 
 </script>
 
 <template>
-  <button :disabled="disabled" :class="[{'loading': loading}, 'app-button']">
+  <button :disabled="disabled" :class="['app-button', {'loading': loading}, customClass]">
     <slot></slot>
   </button>
 </template>
@@ -66,6 +68,22 @@ const props = withDefaults(defineProps<AppButtonProps>(), {
   100% {
     box-shadow: 0 0 0 20px rgba(0, 0, 0, 0);
   }
+}
+
+.app-button-secondary {
+  padding: 0px;
+  min-width: 80px;
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 167%;
+  text-align: center;
+  color: #f5f5f5;
+  height: 22px;
+  border-radius: 8px;
+  color: var(--ui-light-gray);
+  border: 1px solid var(--ui-accent);
+  background-color: var(--ui-accent);
 }
 
 </style>

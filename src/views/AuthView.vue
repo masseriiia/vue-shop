@@ -74,7 +74,7 @@ const handleLogout = () => {
       <form class="auth-card">
         <div class="auth-field">
           <label class="auth-field-label-auth" for="password">Вы авторизованы как</label>
-          <AppInput disabled v-model:data="user.email" type="text"/>
+          <AppInput disabled v-model:data="user.email"/>
         </div>
         <AppButton @click="handleLogout">Выйти из аккаунта</AppButton>
       </form>

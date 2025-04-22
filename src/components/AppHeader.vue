@@ -27,9 +27,10 @@ const initials = computed(() => {
               <RouterLink to="/catalog">Товары</RouterLink>
             </li>
             <li class="menu-item">
-              <RouterLink to="/shops">
-                Магазины
-              </RouterLink>
+              <RouterLink to="/shops">Магазины</RouterLink>
+            </li>
+            <li v-if="userStore.isAdmin" class="menu-item">
+              <RouterLink :to="{name: 'categories'}">Админ-панель</RouterLink>
             </li>
           </ul>
         </nav>
@@ -75,7 +76,7 @@ const initials = computed(() => {
   .menu-item {
     display: flex;
     align-items: center;
-    width: 120px;
+    min-width: 120px;
     height: 40px;
     font-family: var(--font-family);
     font-weight: 600;

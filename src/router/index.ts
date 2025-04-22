@@ -1,14 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useToast } from 'vue-toastification'
+import { useCurrentUserStore } from '@/stores/currentUser.ts'
+import { storeToRefs } from 'pinia'
+import { getAuthToken } from '@/services/api/authTokenService'
 import AuthView from '@/views/AuthView.vue'
 import AdminView from '@/views/AdminView.vue'
 import CatalogView from '@/views/CatalogView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import ShopsView from '@/views/ShopsView.vue'
 import ErrorView from '@/views/ErrorView.vue'
-import { useCurrentUserStore } from '@/stores/currentUser.ts'
-import { storeToRefs } from 'pinia'
-import { getAuthToken } from '@/services/api/authTokenService'
+import AppNewCategory from '@/components/AppNewCategory.vue'
+import CategoriesView from '@/views/CategoriesView.vue'
+import CategoriesEditView from '@/views/CategoriesEditView.vue'
+import GoodsView from '@/views/GoodsView.vue'
+import CategoryView from '@/views/CategoryView.vue'
 
 const toast = useToast();
 
@@ -27,7 +32,35 @@ const routes = [
     path: '/admin',
     name: 'Admin',
     component: AdminView,
-    meta: { requiresAdmin: true }
+    meta: { requiresAdmin: true },
+    children: [
+      {
+        path: 'categories', 
+        component: CategoryView,
+        children:[
+          {
+            path: '',
+            name: 'categories',
+            component: CategoriesView
+          },
+          {
+            path: 'new',
+            name: 'newCategory',
+            component: AppNewCategory
+          },
+          {
+            path: ':id',
+            name: 'categoriesEdit',
+            component: CategoriesEditView
+          },
+        ]
+      },
+      {
+        path: 'goods', 
+        name: 'goods',
+        component: GoodsView
+      },
+    ]
   },
   {
     path: '/catalog',
