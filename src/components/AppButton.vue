@@ -3,25 +3,30 @@
 interface AppButtonProps {
   disabled?: boolean
   loading?: boolean
-  customClass?: string
+  size?: 'default' | 'small'
+  to? : string | object
 }
 
 withDefaults(defineProps<AppButtonProps>(), {
   disabled: false,
   loading: false,
-  customClass: ''
+  size: 'default'
 })
 
 </script>
 
 <template>
-  <button :disabled="disabled" :class="['app-button', {'loading': loading}, customClass]">
+  <button v-if="!to" :disabled="disabled" :class="[size, {'loading': loading}]">
     <slot></slot>
   </button>
+
+  <RouterLink v-else :to="to" :class="size" >
+    <slot></slot>
+  </RouterLink>
 </template>
 
 <style scoped>
-.app-button {
+.default {
   padding: 12px;
   min-width: 120px;
   height: 40px;
@@ -37,17 +42,17 @@ withDefaults(defineProps<AppButtonProps>(), {
   cursor: pointer;
 }
 
-.app-button:hover {
+.default:hover {
   background: var(--ui-accent-active);
   border: 1px solid var(--ui-accent-active);
 }
 
-.app-button:focus {
+.default:focus {
   border: 2px solid var(--ui-accent);
   background: var(--ui-accent-active);
 }
 
-.app-button:disabled {
+.default:disabled {
   opacity: 0.5;
 }
 
@@ -70,20 +75,25 @@ withDefaults(defineProps<AppButtonProps>(), {
   }
 }
 
-.app-button-secondary {
-  padding: 0px;
-  min-width: 80px;
+.small {
   font-family: var(--font-family);
   font-weight: 500;
   font-size: 12px;
-  line-height: 167%;
+  line-height: 20px;
   text-align: center;
-  color: #f5f5f5;
+  color: var(--ui-light-gray);
+  min-width: 80px;
   height: 22px;
   border-radius: 8px;
   color: var(--ui-light-gray);
   border: 1px solid var(--ui-accent);
   background-color: var(--ui-accent);
+}
+
+a {
+  display: block;
+  width: 100%;
+  max-width: 80px;
 }
 
 </style>

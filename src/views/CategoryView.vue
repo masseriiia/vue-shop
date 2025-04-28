@@ -38,7 +38,7 @@
         font-family: var(--font-family);
         font-weight: 400;
         font-size: 14px;
-        line-height: 140%;
+        line-height: 20px;
         color: var(--ui-gray);
     }
 </style>

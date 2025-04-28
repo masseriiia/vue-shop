@@ -70,7 +70,7 @@ const onBlur = () => {
   font-family: var(--font-family);
   font-weight: 400;
   font-size: 12px;
-  line-height: 117%;
+  line-height: 14px;
   color: var(--ui-red);
 }
 </style>

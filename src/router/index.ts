@@ -9,11 +9,10 @@ import CatalogView from '@/views/CatalogView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import ShopsView from '@/views/ShopsView.vue'
 import ErrorView from '@/views/ErrorView.vue'
-import AppNewCategory from '@/components/AppNewCategory.vue'
 import CategoriesView from '@/views/CategoriesView.vue'
-import CategoriesEditView from '@/views/CategoriesEditView.vue'
 import GoodsView from '@/views/GoodsView.vue'
 import CategoryView from '@/views/CategoryView.vue'
+import CategoryFormView from '@/views/CategoryFormView.vue'
 
 const toast = useToast();
 
@@ -46,12 +45,12 @@ const routes = [
           {
             path: 'new',
             name: 'newCategory',
-            component: AppNewCategory
+            component: CategoryFormView
           },
           {
             path: ':id',
             name: 'categoriesEdit',
-            component: CategoriesEditView
+            component: CategoryFormView
           },
         ]
       },
