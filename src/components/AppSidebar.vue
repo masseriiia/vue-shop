@@ -31,15 +31,11 @@ const activeItem = computed(() => route.name)
 
 <style scoped>
 .sidebar {
-    width: 100%;
-    max-width: 320px;
-    height: 100%;
     border-radius: 8px;
     background-color: var(--ui-white);
 }
 
 .sidebar-menu-item {
-    padding: 8px 20px;
     font-family: var(--font-family);
     font-weight: 400;
     font-size: 16px;
@@ -49,17 +45,25 @@ const activeItem = computed(() => route.name)
     transition: color 0.3s ease-in-out;
 
     a {
+        padding: 8px 20px;
         display: block; 
-
         color: var(--ui-black);
     }
 }
-.sidebar-menu-item:first-child{
+.sidebar-menu-item:first-child {
     border-radius: 8px 8px 0 0;
+
+    a {
+        border-radius: inherit;
+    }
 }
 
 .sidebar-menu-item:last-child {
     border-radius: 0 0 8px 8px;
+
+    a {
+        border-radius: inherit;
+    }
 }
 
 .sidebar-menu-item:hover {

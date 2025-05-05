@@ -7,6 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 import AppInput from '@/components/AppInput.vue';
 import AppButton from '@/components/AppButton.vue';
 import type { Category } from '@/types/category';
+import AppLoading from '@/components/AppLoading.vue';
 
 const router = useRouter();
 const route = useRoute()
@@ -14,31 +15,40 @@ const toast = useToast();
 const category = ref<Category | null>(null)
 const errorMessage = ref('')
 const originalName = ref('')
-const title = computed(() => route.name === 'categoriesEdit' ? 'Редактирование категории' : 'Создание категории')
 const isEditForm = computed(() => route.params.id ? true : false)
+const title = computed(() => isEditForm.value ? 'Редактирование категории' : 'Создание категории')
+const isLoading = ref(false)
+const isSubmit = ref(false)
 
-async function asyncLoading() {
+async function prefetchCategory() {
     if(isEditForm.value) {
-        category.value = await fetchCategoryById(Number(route.params.id))
-        if(!category.value || Number(route.params.id) !== category.value.id){
-            router.push({name: '404'})
-        }else {
-            originalName.value = category.value.name;
+        try {
+            isLoading.value = true
+            category.value = await fetchCategoryById(Number(route.params.id))
+            if(category.value) originalName.value = category.value.name
+        } catch(error) {
+            if(axios.isAxiosError(error) && error.status === 404 && error.response?.data.message) {
+                router.push({name: '404'})
+                toast.error(error.response?.data.message)
+            }
+        } finally {
+            isLoading.value = false
         }
     }
 }
 
-asyncLoading()
+prefetchCategory()
 
 const handleCategorySubmit = (async (event: Event) => {
     event.preventDefault()
     if(isEditForm.value) {
-        if (!category.value) return;
+        if (!category.value?.id) return;
         if (category.value.name === originalName.value) {
             toast.info("Вы ничего не изменили")
             return
         }
         try {
+            isSubmit.value = true
             await updateCategory(Number(route.params.id), originalName.value)
             toast.success("Категория успешно изменена")
             router.push({name: 'categories'});
@@ -46,56 +56,61 @@ const handleCategorySubmit = (async (event: Event) => {
             if(axios.isAxiosError(error) && error.status === 400 && error.response?.data.message) {
                 errorMessage.value = error.response?.data.errors.name
             }else if(error instanceof Error){
-                toast.error(error)
+                toast.error(error.message)
             }
             console.log(error)
+        } finally {
+            isSubmit.value = false
         }
     } else {
         try {
+            isSubmit.value = true
             await createCategory(originalName.value.trim())
             toast.success("Категория успешно создана")
             originalName.value = ''
             router.push({name: 'categories'});
-
         } catch (error) {
             if(axios.isAxiosError(error) && error.status === 400 && error.response?.data.message) {
                 errorMessage.value = error.response?.data.errors.name
             } else if(error instanceof Error) {
                 toast.error(error.message)
             }
+        } finally {
+            isSubmit.value = false
         }
     }
 })
 </script>
 
 <template>
-    <div class="new-category">
-            <form class="new-category-content">
-                <h1 class="new-category-title">{{ title }}</h1>
-                <div class="new-category-field">
-                    <label class="new-category-name">Название</label>
+    <AppLoading v-if="isLoading"/>
+    <div v-else class="category-form">
+            <form class="category-form-content">
+                <h1 class="category-form-title">{{ title }}</h1>
+                <div class="category-form-field">
+                    <label class="category-form-name">Название</label>
                     <AppInput v-model:data="originalName" :error="errorMessage"/>
                 </div>
-                <AppButton class="new-category-button" @click="handleCategorySubmit">Сохранить</AppButton>
+                <AppButton :loading="isSubmit" :disabled="isSubmit" class="category-form-button" @click="handleCategorySubmit">Сохранить</AppButton>
             </form>
         </div>
 </template>
 
 <style scoped>
-.new-category {
+.category-form {
     padding: 24px;
     border-radius: 8px;
     background-color: var(--ui-white);
 }
 
-.new-category-content {
+.category-form-content {
     display: flex;
     flex-direction: column;
     width: 304px;
     gap: 24px;
 }
 
-.new-category-title {
+.category-form-title {
     font-family: var(--font-family);
     font-weight: 600;
     font-size: 30px;
@@ -104,7 +119,7 @@ const handleCategorySubmit = (async (event: Event) => {
     color: var(--ui-gray);
 }
 
-.new-category-name {
+.category-form-name {
     margin-bottom: 8px;
     font-family: var(--font-family);
     font-weight: 400;
@@ -113,16 +128,16 @@ const handleCategorySubmit = (async (event: Event) => {
     color: #1e1e1e;
 }
 
-.new-category-field {
+.category-form-field {
     display: flex;
     flex-direction: column;
 }
 
-.new-category-input {
+.category-form-input {
     width: 272px;
 }
 
-.new-category-button {
+.category-form-button {
     align-self: flex-start;
 }
 </style>

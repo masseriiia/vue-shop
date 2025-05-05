@@ -3,31 +3,31 @@
 interface AppButtonProps {
   disabled?: boolean
   loading?: boolean
-  size?: 'default' | 'small'
+  size?: 'small'
   to? : string | object
 }
 
 withDefaults(defineProps<AppButtonProps>(), {
   disabled: false,
   loading: false,
-  size: 'default'
 })
 
 </script>
 
 <template>
-  <button v-if="!to" :disabled="disabled" :class="[size, {'loading': loading}]">
+  <component 
+    :is="to ? 'RouterLink' :'button'"
+    :to="to"
+    v-bind="to ? {to} : {}"
+    :class="to ? ['app-button', size] : ['app-button', size, {'loading': loading}]"
+    :disabled="to ? undefined : disabled"
+    >
     <slot></slot>
-  </button>
-
-  <RouterLink v-else :to="to" :class="size" >
-    <slot></slot>
-  </RouterLink>
+  </component>
 </template>
 
 <style scoped>
-.default {
-  padding: 12px;
+.app-button {
   min-width: 120px;
   height: 40px;
   font-family: var(--font-family);
@@ -42,17 +42,17 @@ withDefaults(defineProps<AppButtonProps>(), {
   cursor: pointer;
 }
 
-.default:hover {
+.app-button:hover {
   background: var(--ui-accent-active);
   border: 1px solid var(--ui-accent-active);
 }
 
-.default:focus {
+.app-button:focus {
   border: 2px solid var(--ui-accent);
   background: var(--ui-accent-active);
 }
 
-.default:disabled {
+.app-button:disabled {
   opacity: 0.5;
 }
 

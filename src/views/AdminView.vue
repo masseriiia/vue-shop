@@ -6,9 +6,11 @@ import AppSidebar from '@/components/AppSidebar.vue';
 <template>
   <div class="admin">
     <div class="container">
-      <div class="admin-content">
-        <AppSidebar/>
+      <div class="admin-wrapper">
         <div>
+          <AppSidebar/>
+        </div>
+        <div class="admin-content">
           <RouterView/>
         </div>
       </div>
@@ -22,8 +24,10 @@ import AppSidebar from '@/components/AppSidebar.vue';
   padding-bottom: 23px;
 }
 
-.admin-content {
-  display: flex;
+.admin-wrapper {
+  display: grid;
+  grid-template-columns: 320px 1fr;
   gap: 24px;
 }
+
 </style>
