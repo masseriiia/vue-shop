@@ -1,14 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useToast } from 'vue-toastification'
+import { useCurrentUserStore } from '@/stores/currentUser.ts'
+import { storeToRefs } from 'pinia'
+import { getAuthToken } from '@/services/api/authTokenService'
 import AuthView from '@/views/AuthView.vue'
 import AdminView from '@/views/AdminView.vue'
 import CatalogView from '@/views/CatalogView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import ShopsView from '@/views/ShopsView.vue'
 import ErrorView from '@/views/ErrorView.vue'
-import { useCurrentUserStore } from '@/stores/currentUser.ts'
-import { storeToRefs } from 'pinia'
-import { getAuthToken } from '@/services/api/authTokenService'
+import CategoriesView from '@/views/CategoriesView.vue'
+import GoodsView from '@/views/GoodsView.vue'
+import CategoryFormView from '@/views/CategoryFormView.vue'
+import BannersView from '@/views/BannersView.vue'
 
 const toast = useToast();
 
@@ -27,7 +31,34 @@ const routes = [
     path: '/admin',
     name: 'Admin',
     component: AdminView,
-    meta: { requiresAdmin: true }
+    meta: { requiresAdmin: true },
+    children: [
+      {
+        path: 'categories',
+        name: 'categories',
+        component: CategoriesView
+      },
+      {
+        path: 'categories/new',
+        name: 'newCategory',
+        component: CategoryFormView
+      },
+      {
+        path: 'categories/:id',
+        name: 'categoriesEdit',
+        component: CategoryFormView
+      },
+      {
+        path: 'goods', 
+        name: 'goods',
+        component: GoodsView
+      },
+      {
+        path: 'banners', 
+        name: 'banners',
+        component: BannersView
+      },
+    ]
   },
   {
     path: '/catalog',
