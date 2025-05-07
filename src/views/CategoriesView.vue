@@ -87,6 +87,7 @@ import axios from 'axios';
 <style scoped>
     table {
         width: 100%;
+        max-width: 872px;
         border-radius: 8px;
         border-collapse: collapse;
         background-color: var(--ui-white);

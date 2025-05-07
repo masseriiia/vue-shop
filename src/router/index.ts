@@ -11,8 +11,8 @@ import ShopsView from '@/views/ShopsView.vue'
 import ErrorView from '@/views/ErrorView.vue'
 import CategoriesView from '@/views/CategoriesView.vue'
 import GoodsView from '@/views/GoodsView.vue'
-import CategoryView from '@/views/CategoryView.vue'
 import CategoryFormView from '@/views/CategoryFormView.vue'
+import BannersView from '@/views/BannersView.vue'
 
 const toast = useToast();
 
@@ -34,30 +34,29 @@ const routes = [
     meta: { requiresAdmin: true },
     children: [
       {
-        path: 'categories', 
-        component: CategoryView,
-        children:[
-          {
-            path: '',
-            name: 'categories',
-            component: CategoriesView
-          },
-          {
-            path: 'new',
-            name: 'newCategory',
-            component: CategoryFormView
-          },
-          {
-            path: ':id',
-            name: 'categoriesEdit',
-            component: CategoryFormView
-          },
-        ]
+        path: 'categories',
+        name: 'categories',
+        component: CategoriesView
+      },
+      {
+        path: 'categories/new',
+        name: 'newCategory',
+        component: CategoryFormView
+      },
+      {
+        path: 'categories/:id',
+        name: 'categoriesEdit',
+        component: CategoryFormView
       },
       {
         path: 'goods', 
         name: 'goods',
         component: GoodsView
+      },
+      {
+        path: 'banners', 
+        name: 'banners',
+        component: BannersView
       },
     ]
   },
