@@ -59,7 +59,7 @@ import axios from 'axios';
                     <td>Время создания</td>
                     <td>Время обновления</td>
                     <td>
-                    <AppButton size="small" :to="{name: 'newCategory'}">Создать</AppButton>
+                    <AppButton size="small" :to="{name: 'categoriesNew'}">Создать</AppButton>
                     </td>
                     <td></td>
                     <td></td>

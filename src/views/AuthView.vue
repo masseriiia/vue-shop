@@ -74,7 +74,7 @@ const handleLogout = () => {
       <form class="auth-card">
         <div class="auth-field">
           <label class="auth-field-label-auth" for="password">Вы авторизованы как</label>
-          <AppInput disabled v-model:data="user.email"/>
+          <AppInput disabled v-model="user.email"/>
         </div>
         <AppButton @click="handleLogout">Выйти из аккаунта</AppButton>
       </form>
@@ -86,11 +86,11 @@ const handleLogout = () => {
       <form class="auth-card" @submit.prevent="handleLoginSubmit">
         <div class="auth-field">
           <label class="auth-field-label" for="email">Email</label>
-          <AppInput name="email" :error="tuched.email ? emailErrorText : null" v-model:data="auth.email" v-model:tuched="tuched.email"/>
+          <AppInput name="email" :error="tuched.email ? emailErrorText : null" v-model="auth.email" v-model:tuched="tuched.email"/>
         </div>
         <div class="auth-field">
           <label class="auth-field-label" for="password">Пароль</label>
-          <AppInput name="password" :error="tuched.password ? passwordErrorText : null" v-model:data="auth.password" v-model:tuched="tuched.password" type="password"/>
+          <AppInput name="password" :error="tuched.password ? passwordErrorText : null" v-model="auth.password" v-model:tuched="tuched.password" type="password"/>
         </div>
         <AppButton :loading="isLoading" :disabled="isSubmitDisabled">Войти</AppButton>
       </form>

@@ -14,7 +14,7 @@ withDefaults(defineProps<AppInputProps>(), {
   disabled: false
 })
 
-const model = defineModel<string | null>('data')
+const model = defineModel<string | number | null>()
 const tuched = defineModel<boolean>('tuched')
 
 const onBlur = () => {

@@ -58,7 +58,6 @@ const handleCategorySubmit = (async (event: Event) => {
             }else if(error instanceof Error){
                 toast.error(error.message)
             }
-            console.log(error)
         } finally {
             isSubmit.value = false
         }
@@ -89,7 +88,7 @@ const handleCategorySubmit = (async (event: Event) => {
                 <h1 class="category-form-title">{{ title }}</h1>
                 <div class="category-form-field">
                     <label class="category-form-name">Название</label>
-                    <AppInput v-model:data="originalName" :error="errorMessage"/>
+                    <AppInput v-model="originalName" :error="errorMessage"/>
                 </div>
                 <AppButton :loading="isSubmit" :disabled="isSubmit" class="category-form-button" @click="handleCategorySubmit">Сохранить</AppButton>
             </form>
@@ -125,16 +124,14 @@ const handleCategorySubmit = (async (event: Event) => {
     font-weight: 400;
     font-size: 16px;
     line-height: 22px;
-    color: #1e1e1e;
+    color: var(  --ui-dark-gray);
 }
 
 .category-form-field {
     display: flex;
     flex-direction: column;
-}
-
-.category-form-input {
-    width: 272px;
+    width: 100%;
+    max-width: 272px;
 }
 
 .category-form-button {

@@ -15,7 +15,7 @@ const links = [
 <template>
     <div class="sidebar">
         <div class="sidebar-menu">
-            <RouterLink v-for="link of links" :key="link.id" :to="link.to" :class="['sidebar-menu-item',{active: activeItem === link.to.name}]">
+            <RouterLink v-for="link of links" :key="link.id" :to="link.to" :class="['sidebar-menu-item',{active: activeItem === link.to.name || activeItem === link.to.name + 'New' || activeItem === link.to.name + 'Edit'}]">
                 {{ link.title }}
             </RouterLink>
         </div>

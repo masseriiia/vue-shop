@@ -13,6 +13,7 @@ import CategoriesView from '@/views/CategoriesView.vue'
 import GoodsView from '@/views/GoodsView.vue'
 import CategoryFormView from '@/views/CategoryFormView.vue'
 import BannersView from '@/views/BannersView.vue'
+import GoodFormView from '@/views/GoodFormView.vue'
 
 const toast = useToast();
 
@@ -40,7 +41,7 @@ const routes = [
       },
       {
         path: 'categories/new',
-        name: 'newCategory',
+        name: 'categoriesNew',
         component: CategoryFormView
       },
       {
@@ -52,6 +53,16 @@ const routes = [
         path: 'goods', 
         name: 'goods',
         component: GoodsView
+      },
+      {
+        path: 'goods/new', 
+        name: 'goodsNew',
+        component: GoodFormView
+      },
+      {
+        path: 'goods/:id', 
+        name: 'goodsEdit',
+        component: GoodFormView
       },
       {
         path: 'banners', 
