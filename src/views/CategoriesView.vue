@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import AppButton from '@/components/AppButton.vue'
 import { deleteCategory, fetchCategories } from '@/services/api/categoriesApi';
-import { formatDate } from '@/utils/formateDate'
+import { formatDate } from '@/utils/formatDate'
 import { useToast } from 'vue-toastification';
 import type { Category } from '@/types/category';
 import { formatName } from '@/utils/formatName';

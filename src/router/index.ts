@@ -45,7 +45,7 @@ const routes = [
         component: CategoryFormView
       },
       {
-        path: 'categories/:id',
+        path: 'categories/:id(\\d+)',
         name: 'categoriesEdit',
         component: CategoryFormView
       },
@@ -60,7 +60,7 @@ const routes = [
         component: GoodFormView
       },
       {
-        path: 'goods/:id', 
+        path: 'goods/:id(\\d+)', 
         name: 'goodsEdit',
         component: GoodFormView
       },

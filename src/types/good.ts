@@ -4,8 +4,8 @@ export interface Good {
     price: number | null;
     oldPrice: number | null;
     photoUrl: string;
-    categoryId: number | string;
-    createdAt?: number
-    updatedAt?: number
-    createdBy?: number
+    updatedAt?: string;
+    createdAt?: string;
+    categoryId: number;
+    createdBy?: number;
 }

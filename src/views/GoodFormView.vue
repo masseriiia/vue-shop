@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import axios from 'axios';
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router';
 import AppButton from '@/components/AppButton.vue';
 import AppFormLabel from '@/components/AppFormLabel.vue';
@@ -9,10 +9,9 @@ import AppSelect from '@/components/AppSelect.vue';
 import { fetchCategories } from '@/services/api/categoriesApi';
 import { createGood, fetchGoodById, updateGood } from '@/services/api/goodsApi';
 import type { Category } from '@/types/category';
-import type { Good } from '@/types/good';
-import type { Error } from '@/types/error';
-import { computed, ref } from 'vue'
 import { useToast } from 'vue-toastification';
+import { is404Error } from '@/utils/is404Error';
+import { getFormValidationErrors } from '@/utils/getFormValidationErrors';
 
 const router = useRouter();
 const route = useRoute()
@@ -23,28 +22,36 @@ const good = ref({
     price: null,
     oldPrice: null,
     photoUrl: '',
-    categoryId: ''
+    categoryId: 0
 })
-const copyGood = ref<Good | null>(null)
-const errors = ref<Error | null>(null)
+const errors = ref<Record<string, string>>({})
 const isEditForm = computed(() => route.params.id ? true : false)
 const title = computed(() => isEditForm.value ? 'Редактирование товара' : 'Создание товара')
 const isLoading = ref(false)
 const isSubmit = ref(false)
 
-async function prefetchCategory() {
+async function prefetchCategories() {
+    categories.value = await fetchCategories()
+}
+
+async function checkAndLoadGoodData() {
+    if(isEditForm.value) {
+        good.value = await fetchGoodById(Number(route.params.id))
+    }
+}
+
+async function preloadAndInitGoodsForm() {
     try{
         isLoading.value = true
-        categories.value = await fetchCategories()
-        if(isEditForm.value) {
-            good.value = await fetchGoodById(Number(route.params.id))
-            if(good.value) copyGood.value = {...good.value}
-        }
+        await prefetchCategories()
+        await checkAndLoadGoodData()
     } catch(error) {
-        if(axios.isAxiosError(error) && error.status === 404 && error.response?.data.message) {
+        if(is404Error(error)) {
             router.push({name: '404'})
-            toast.error(error.response?.data.message)
-        } else if(error instanceof Error) {
+            return
+        }
+
+        if(error instanceof Error) {
             toast.error(error.message)
         }
     } finally {
@@ -52,24 +59,31 @@ async function prefetchCategory() {
     }
 }
 
-prefetchCategory()
+preloadAndInitGoodsForm()
+
 
 const handleGoodSubmit = async (event: Event) => {
     event.preventDefault()
     if(isEditForm.value) {
-        if(copyGood.value && JSON.stringify(good.value) === JSON.stringify(copyGood.value)) {
-            toast.info("Вы ничего не изменили")
-            return 
-        } 
         try {
             isSubmit.value = true
-            await updateGood(Number(route.params.id), good.value.name, Number(good.value.price), Number(good.value.oldPrice), good.value.photoUrl, Number(good.value.categoryId))
+            console.log(good.value)
+            await updateGood(good.value)
             toast.success("Товар сохранен")
             router.push({name: 'goods'});
         } catch(error) {
-            if(axios.isAxiosError(error) && error.status === 400 && error.response?.data.message) {
-                errors.value = error.response?.data.errors ?? { name: error.response.data.message }
-            } else if(error instanceof Error) {
+            const { validationErrors, validationErrorMessage } = getFormValidationErrors(error)
+
+            if(validationErrors) {
+                errors.value = validationErrors
+            }
+            
+            if(validationErrorMessage) {
+                toast.error(validationErrorMessage)
+                return
+            }
+
+            if(error instanceof Error) {
                 toast.error(error.message)
             }
         } finally {
@@ -78,14 +92,24 @@ const handleGoodSubmit = async (event: Event) => {
     } else {
         try {
             isSubmit.value = true
-            const data = await createGood(good.value.name, Number(good.value.price), Number(good.value.oldPrice), good.value.photoUrl, Number(good.value.categoryId))
+            console.log(good.value)
+            const data = await createGood(good.value)
             router.push({name: 'goodsEdit', params: {id: data.id}})
-            prefetchCategory()
+            preloadAndInitGoodsForm()
             toast.success("Товар успешно создан")
         } catch(error) {
-            if(axios.isAxiosError(error) && error.status === 400 && error.response?.data.message) {
-                errors.value = error.response?.data.errors ?? { name: error.response.data.message }
-            } else if(error instanceof Error) {
+            const { validationErrors, validationErrorMessage } = getFormValidationErrors(error)
+
+            if(validationErrors) {
+                errors.value = validationErrors
+            }
+            
+            if(validationErrorMessage) {
+                toast.error(validationErrorMessage)
+                return
+            }
+
+            if(error instanceof Error) {
                 toast.error(error.message)
             }
         } finally {
@@ -98,33 +122,33 @@ const handleGoodSubmit = async (event: Event) => {
 <template>
     <AppLoading v-if="isLoading"/>
     <div v-else class="good-form">
-            <form class="good-form-content">
-                <h1 class="good-form-title">{{ title }}</h1>
-                <AppFormLabel text="Название">
-                    <AppInput v-model="good.name" :error="errors?.name"/>
-                </AppFormLabel>
+        <form class="good-form-content">
+            <h1 class="good-form-title">{{ title }}</h1>
+            <AppFormLabel text="Название">
+                <AppInput v-model="good.name" :error="errors?.name"/>
+            </AppFormLabel>
                 
-                <AppFormLabel text="Цена">
-                    <AppInput v-model="good.price" :error="errors?.price"/>
-                </AppFormLabel>
+            <AppFormLabel text="Цена">
+                <AppInput v-model.number="good.price" type="number" :error="errors?.price"/>
+            </AppFormLabel>
 
-                <AppFormLabel text="Старая цена">
-                    <AppInput v-model="good.oldPrice" :error="errors?.oldPrice"/>
-                </AppFormLabel>
+            <AppFormLabel text="Старая цена">
+                <AppInput v-model.number="good.oldPrice" type="number" :error="errors?.oldPrice"/>
+            </AppFormLabel>
                 
-                <AppFormLabel text="Изображение">
-                    <AppInput v-model="good.photoUrl" :error="errors?.photoUrl"/>
-                    <img v-if="good.photoUrl" class="good-form-image" :src="good.photoUrl" alt="Изображение">
-                    <div v-else class="good-form-image">Добавьте изображение</div>
-                </AppFormLabel>
+            <AppFormLabel text="Изображение">
+                <AppInput v-model="good.photoUrl" :error="errors?.photoUrl"/>
+                <img v-if="good.photoUrl" class="good-form-image" :src="good.photoUrl" alt="Изображение">
+                <div v-else class="good-form-image">Добавьте изображение</div>
+            </AppFormLabel>
 
-                <AppFormLabel text="Категория">
-                    <AppSelect :options="categories" v-model="good.categoryId" :error="errors?.categoryId" placeholder="Выберете категорию"/>
-                </AppFormLabel>
+            <AppFormLabel text="Категория">
+                <AppSelect :options="categories" v-model.number="good.categoryId" type="number" :error="errors?.categoryId" placeholder="Выберете категорию"/>
+            </AppFormLabel>
 
-                <AppButton :loading="isSubmit" :disabled="isSubmit" class="good-form-button" @click="handleGoodSubmit">Сохранить</AppButton>
-            </form>
-        </div>
+            <AppButton :loading="isSubmit" :disabled="isSubmit" class="good-form-button" @click="handleGoodSubmit">Сохранить</AppButton>
+        </form>
+    </div>
 </template>
 
 <style scoped>

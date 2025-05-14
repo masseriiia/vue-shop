@@ -18,7 +18,7 @@ const model = defineModel()
 
 <template>
     <select :class="['select', {'select-error': error}]" v-model="model" placeholder="placeholder">
-        <option disabled value="">{{ placeholder }}</option>
+        <option disabled :value="0">{{ placeholder }}</option>
         <option 
             v-for="category of options" 
             :key="category.id"

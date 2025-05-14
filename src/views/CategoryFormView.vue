@@ -2,18 +2,19 @@
 import { computed, ref } from 'vue';
 import { createCategory, fetchCategoryById, updateCategory } from '@/services/api/categoriesApi';
 import { useToast } from 'vue-toastification';
-import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
 import AppInput from '@/components/AppInput.vue';
 import AppButton from '@/components/AppButton.vue';
 import type { Category } from '@/types/category';
 import AppLoading from '@/components/AppLoading.vue';
+import { is404Error } from '@/utils/is404Error';
+import { getFormValidationErrors } from '@/utils/getFormValidationErrors';
 
 const router = useRouter();
 const route = useRoute()
 const toast = useToast();
 const category = ref<Category | null>(null)
-const errorMessage = ref('')
+const errorMessage = ref<Record<string, string>>({})
 const originalName = ref('')
 const isEditForm = computed(() => route.params.id ? true : false)
 const title = computed(() => isEditForm.value ? 'Редактирование категории' : 'Создание категории')
@@ -27,9 +28,9 @@ async function prefetchCategory() {
             category.value = await fetchCategoryById(Number(route.params.id))
             if(category.value) originalName.value = category.value.name
         } catch(error) {
-            if(axios.isAxiosError(error) && error.status === 404 && error.response?.data.message) {
+            if(is404Error(error)) {
                 router.push({name: '404'})
-                toast.error(error.response?.data.message)
+                return
             }
         } finally {
             isLoading.value = false
@@ -53,9 +54,13 @@ const handleCategorySubmit = (async (event: Event) => {
             toast.success("Категория успешно изменена")
             router.push({name: 'categories'});
         } catch(error) {
-            if(axios.isAxiosError(error) && error.status === 400 && error.response?.data.message) {
-                errorMessage.value = error.response?.data.errors.name
-            }else if(error instanceof Error){
+            const { validationErrors } = getFormValidationErrors(error)
+
+            if(validationErrors) {
+                errorMessage.value = validationErrors
+            }
+            
+            if(error instanceof Error){
                 toast.error(error.message)
             }
         } finally {
@@ -69,9 +74,14 @@ const handleCategorySubmit = (async (event: Event) => {
             originalName.value = ''
             router.push({name: 'categories'});
         } catch (error) {
-            if(axios.isAxiosError(error) && error.status === 400 && error.response?.data.message) {
-                errorMessage.value = error.response?.data.errors.name
-            } else if(error instanceof Error) {
+            const { validationErrors } = getFormValidationErrors(error)
+            
+            if(validationErrors) {
+                errorMessage.value = validationErrors
+
+            }
+            
+            if(error instanceof Error) {
                 toast.error(error.message)
             }
         } finally {
@@ -88,7 +98,7 @@ const handleCategorySubmit = (async (event: Event) => {
                 <h1 class="category-form-title">{{ title }}</h1>
                 <div class="category-form-field">
                     <label class="category-form-name">Название</label>
-                    <AppInput v-model="originalName" :error="errorMessage"/>
+                    <AppInput v-model="originalName" :error="errorMessage.name"/>
                 </div>
                 <AppButton :loading="isSubmit" :disabled="isSubmit" class="category-form-button" @click="handleCategorySubmit">Сохранить</AppButton>
             </form>

@@ -1,18 +1,21 @@
+import type { Good } from "@/types/good";
 import { instance } from "./baseApi";
+
+type GoodCreateModel = Omit<Good, 'id' | 'updatedAt' | 'createdAt' | 'createdBy'>
+type GoodUpdateModel = Pick<Good, 'id'> & GoodCreateModel 
 
 export async function fetchGoods() {
   const { data } = await instance.get('/goods')
   return data
 }
 
-export async function createGood(name: string, price: number, oldPrice: number, photoUrl: string, categoryId: number) {
-    
-  const { data } = await instance.post('/goods', {name, price, oldPrice, photoUrl, categoryId})
+export async function createGood(good: GoodCreateModel) {
+  const { data } = await instance.post('/goods', good)
   return data
 }
 
-export async function updateGood(id: number, name: string, price: number, oldPrice: number, photoUrl: string, categoryId: number) {
-  await instance.put(`/goods/${id}`, {name, price, oldPrice, photoUrl, categoryId})
+export async function updateGood(good: GoodUpdateModel) {
+  await instance.put(`/goods/${good.id}`, good)
 }
 
 export async function fetchGoodById(id: number) {
