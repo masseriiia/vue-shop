@@ -1,27 +1,25 @@
 <script setup lang="ts">
-
 interface AppButtonProps {
   disabled?: boolean
   loading?: boolean
   size?: 'small'
-  to? : string | object
+  to?: string | object
 }
 
 withDefaults(defineProps<AppButtonProps>(), {
   disabled: false,
   loading: false,
 })
-
 </script>
 
 <template>
-  <component 
-    :is="to ? 'RouterLink' :'button'"
+  <component
+    :is="to ? 'RouterLink' : 'button'"
     :to="to"
-    v-bind="to ? {to} : {}"
-    :class="to ? ['app-button', size] : ['app-button', size, {'loading': loading}]"
+    v-bind="to ? { to } : {}"
+    :class="to ? ['app-button', size] : ['app-button', size, { loading: loading }]"
     :disabled="to ? undefined : disabled"
-    >
+  >
     <slot></slot>
   </component>
 </template>
@@ -95,5 +93,4 @@ a {
   width: 100%;
   max-width: 80px;
 }
-
 </style>

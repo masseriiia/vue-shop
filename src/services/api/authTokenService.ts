@@ -1,4 +1,4 @@
-const AUTH_TOKEN_KEY_NAME='vue_shoping_auth_token'
+const AUTH_TOKEN_KEY_NAME = 'vue_shoping_auth_token'
 
 export function getAuthToken() {
   return localStorage.getItem(AUTH_TOKEN_KEY_NAME)

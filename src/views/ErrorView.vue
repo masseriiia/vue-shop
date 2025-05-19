@@ -1,11 +1,9 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="error">
     <div class="content">
-      <img src="@/assets/images/404.png" alt="404">
+      <img src="@/assets/images/404.png" alt="404" />
       <p class="title">Такой страницы не существует</p>
     </div>
   </div>

@@ -1,6 +1,4 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <footer class="app-footer">
@@ -12,9 +10,15 @@
           <li class="footer-link"><RouterLink to="/">О нас</RouterLink></li>
         </ul>
         <div class="social-icons">
-          <RouterLink to="/" class="social-icon whatsapp"><span class="visually-hidden"><img src="../assets/icons/whatsapp.svg"/></span></RouterLink>
-          <RouterLink to="/" class="social-icon telegram"><span class="visually-hidden"><img src="../assets/icons/telegram.svg"/></span></RouterLink>
-          <RouterLink to="/" class="social-icon instagram"><span class="visually-hidden"><img src="../assets/icons/instagram.svg"/></span></RouterLink>
+          <RouterLink to="/" class="social-icon whatsapp"
+            ><span class="visually-hidden"><img src="../assets/icons/whatsapp.svg" /></span
+          ></RouterLink>
+          <RouterLink to="/" class="social-icon telegram"
+            ><span class="visually-hidden"><img src="../assets/icons/telegram.svg" /></span
+          ></RouterLink>
+          <RouterLink to="/" class="social-icon instagram"
+            ><span class="visually-hidden"><img src="../assets/icons/instagram.svg" /></span
+          ></RouterLink>
         </div>
       </div>
     </div>
