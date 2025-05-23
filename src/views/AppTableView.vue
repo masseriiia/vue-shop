@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="T extends {id: number}">
+<script setup lang="ts" generic="T extends { id: number }">
 export interface AppTableViewColumnDefinition {
   name: string
   title?: string
@@ -9,7 +9,6 @@ defineProps<{
   cols: AppTableViewColumnDefinition[]
   data: T[]
 }>()
-
 </script>
 
 <template>

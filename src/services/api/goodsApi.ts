@@ -6,7 +6,7 @@ type GoodCreateModel = Omit<Good, 'id' | 'updatedAt' | 'createdAt' | 'createdBy'
 type GoodUpdateModel = { id?: number } & GoodCreateModel
 
 export async function fetchGoods(page: number) {
-  const { data } = await instance.get('/goods', { params: {page, limit: GOODS_LIMIT}})
+  const { data } = await instance.get('/goods', { params: { page, limit: GOODS_LIMIT } })
   return data
 }
 

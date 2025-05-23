@@ -19,7 +19,7 @@ const route = useRoute()
 const toast = useToast()
 const goods = ref<GoodsResponse>({
   items: [],
-  page:  Number(route.query.page) || 1,
+  page: Number(route.query.page) || 1,
   limit: 0,
   total: 0,
 })
@@ -29,16 +29,16 @@ const isLoading = ref(true)
 async function prefetchGoods() {
   try {
     isLoading.value = true
-    if(Number(route.query.page) < 1) {
+    if (Number(route.query.page) < 1) {
       router.push({ name: '404' })
     }
     goods.value = await fetchGoods(goods.value.page)
     categories.value = await fetchCategories()
-  } catch(error) {
+  } catch (error) {
     if (is404Error(error)) {
-        router.push({ name: '404' })
-        return
-      }
+      router.push({ name: '404' })
+      return
+    }
   } finally {
     isLoading.value = false
   }
@@ -53,10 +53,10 @@ const onClickDelete = async (item: Good) => {
     isLoading.value = true
     await deleteGood(item.id)
     const resPages = Math.ceil((goods.value.total - 1) / goods.value.limit)
-    if(goods.value.page > resPages && goods.value.page !== 1) {
-      router.push({ query: { ...route.query, page: goods.value.page - 1 }})
+    if (goods.value.page > resPages && goods.value.page !== 1) {
+      router.push({ query: { ...route.query, page: goods.value.page - 1 } })
     } else {
-      router.push({ query: { ...route.query, page: goods.value.page }})
+      router.push({ query: { ...route.query, page: goods.value.page } })
     }
     toast.success('Товар удалён')
   } finally {
@@ -119,9 +119,7 @@ watch(
         </td>
       </template>
     </AppTableView>
-    <AppPagination
-      v-model:total="goods.total"
-    />
+    <AppPagination v-model:total="goods.total" />
   </div>
 </template>
 

@@ -1,4 +1,4 @@
-import { AUTH_TOKEN_KEY_NAME } from "@/utils/constants"
+import { AUTH_TOKEN_KEY_NAME } from '@/utils/constants'
 
 export function getAuthToken() {
   return localStorage.getItem(AUTH_TOKEN_KEY_NAME)

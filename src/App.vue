@@ -12,7 +12,7 @@ const userStore = useCurrentUserStore()
 const { isLoading } = storeToRefs(userStore)
 
 watchEffect(() => {
-  document.title = route.meta.title as string || 'Vue Shop'
+  document.title = (route.meta.title as string) || 'Vue Shop'
 })
 </script>
 

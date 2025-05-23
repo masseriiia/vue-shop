@@ -4,7 +4,7 @@ import { computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 
 const route = useRoute()
-const modelTotal = defineModel<number>('total', {default: 0})
+const modelTotal = defineModel<number>('total', { default: 0 })
 
 const currentPage = computed(() => Number(route.query.page) || 1)
 const totalPages = computed(() => Math.ceil(modelTotal.value / GOODS_LIMIT))
@@ -19,54 +19,69 @@ const visiblePages = computed(() => {
 
   pages.push(1)
 
-  if(currentPage.value - range > 1) {
+  if (currentPage.value - range > 1) {
     pages.push('...')
   }
 
   const start = Math.max(2, currentPage.value - range)
   const end = Math.min(total - 1, currentPage.value + range)
 
-  for(let i = start; i <= end; i++) {
+  for (let i = start; i <= end; i++) {
     pages.push(i)
   }
 
-  if(currentPage.value + range < total - 1) {
+  if (currentPage.value + range < total - 1) {
     pages.push('...')
   }
 
-  if(total > 1) {
+  if (total > 1) {
     pages.push(total)
   }
 
   return pages
 })
-
 </script>
 
 <template>
   <nav class="pagination">
     <div class="pagination-content">
-      <RouterLink v-if="!isDisabledLeft" class="pagination-link" :to="{query: {page: currentPage - 1}}">
+      <RouterLink
+        v-if="!isDisabledLeft"
+        class="pagination-link"
+        :to="{ query: { page: currentPage - 1 } }"
+      >
         <span class="pagination-link-left"></span>
       </RouterLink>
-      <span v-else class="pagination-link" >
-        <span :class="['pagination-link-left', {'pagination-link-disabled': isDisabledLeft}]"></span>
+      <span v-else class="pagination-link">
+        <span
+          :class="['pagination-link-left', { 'pagination-link-disabled': isDisabledLeft }]"
+        ></span>
       </span>
-      
+
       <div class="pagination-pages">
         <template v-for="page in visiblePages" :key="'page-' + page">
           <span v-if="page === '...'">{{ page }}</span>
-          <RouterLink v-else :to="{query: {page}}" :class="['pagination-page', {'pagination-active': page === currentPage}]">
+          <RouterLink
+            v-else
+            :to="{ query: { page } }"
+            :class="['pagination-page', { 'pagination-active': page === currentPage }]"
+          >
             {{ page }}
           </RouterLink>
         </template>
       </div>
-      
-      <RouterLink v-if="!isDisabledRight" class="pagination-link" :to="{query: {page: currentPage + 1}}">
-        <span class="pagination-link-right" ></span>
+
+      <RouterLink
+        v-if="!isDisabledRight"
+        class="pagination-link"
+        :to="{ query: { page: currentPage + 1 } }"
+      >
+        <span class="pagination-link-right"></span>
       </RouterLink>
       <span v-else class="pagination-link">
-        <span :class="['pagination-link-right', {'pagination-link-disabled': isDisabledRight}]"></span>
+        <span
+          :class="['pagination-link-right', { 'pagination-link-disabled': isDisabledRight }]"
+        ></span>
       </span>
     </div>
   </nav>
