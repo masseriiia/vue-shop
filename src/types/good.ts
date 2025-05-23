@@ -10,7 +10,7 @@ export interface Good {
   createdBy: number
 }
 
-export interface Goods {
+export interface GoodsResponse {
   items: Good[]
   page: number
   limit: number

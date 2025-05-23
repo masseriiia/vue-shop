@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import AppLoading from '@/components/AppLoading.vue'
 import { deleteGood, fetchGoods } from '@/services/api/goodsApi'
-import type { Good, Goods } from '@/types/good'
-import { reactive, ref, watch } from 'vue'
+import type { Good, GoodsResponse } from '@/types/good'
+import { ref, watch } from 'vue'
 import { useToast } from 'vue-toastification'
 import AppTableView, { type AppTableViewColumnDefinition } from './AppTableView.vue'
 import AppButton from '@/components/AppButton.vue'
@@ -10,7 +10,6 @@ import { formatDate } from '@/utils/formatDate'
 import { formatName } from '@/utils/formatName'
 import { fetchCategories } from '@/services/api/categoriesApi'
 import type { Category } from '@/types/category'
-import axios from 'axios'
 import AppPagination from '@/components/AppPagination.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { is404Error } from '@/utils/is404Error'
@@ -18,25 +17,22 @@ import { is404Error } from '@/utils/is404Error'
 const router = useRouter()
 const route = useRoute()
 const toast = useToast()
-const goods = ref<Goods>({
+const goods = ref<GoodsResponse>({
   items: [],
-  page: 0,
+  page:  Number(route.query.page) || 1,
   limit: 0,
   total: 0,
 })
 const categories = ref<Category[]>([])
 const isLoading = ref(true)
-const pagination = reactive({
-  page: Number(route.query.page) || 1,
-  limit: 10,
-  total: 0,
-})
 
 async function prefetchGoods() {
   try {
     isLoading.value = true
-    goods.value = await fetchGoods({ limit: pagination.limit, page: pagination.page })
-    await updatePagination(goods.value.page, goods.value.limit, goods.value.total)
+    if(Number(route.query.page) < 1) {
+      router.push({ name: '404' })
+    }
+    goods.value = await fetchGoods(goods.value.page)
     categories.value = await fetchCategories()
   } catch(error) {
     if (is404Error(error)) {
@@ -50,27 +46,19 @@ async function prefetchGoods() {
 
 prefetchGoods()
 
-async function updatePagination(page: number, limit: number, total: number) {
-  pagination.page = page
-  pagination.limit = limit
-  pagination.total = total
-}
-
 const onClickDelete = async (item: Good) => {
   const category = confirm(`Уверены что хотите удалить товар "${item.name}"?`)
   if (!category) return null
   try {
     isLoading.value = true
     await deleteGood(item.id)
-    goods.value = await fetchGoods({ limit: pagination.limit, page: 1 })
-    await updatePagination(goods.value.page, goods.value.limit, goods.value.total)
-    toast.success('Товар удалён')
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.status === 401 && error.response?.data) {
-      toast.error(error.response?.data)
-    } else if (error instanceof Error) {
-      toast.error(error.message)
+    const resPages = Math.ceil((goods.value.total - 1) / goods.value.limit)
+    if(goods.value.page > resPages && goods.value.page !== 1) {
+      router.push({ query: { ...route.query, page: goods.value.page - 1 }})
+    } else {
+      router.push({ query: { ...route.query, page: goods.value.page }})
     }
+    toast.success('Товар удалён')
   } finally {
     isLoading.value = false
   }
@@ -92,12 +80,11 @@ const columns: AppTableViewColumnDefinition[] = [
 ]
 
 watch(
-  () => pagination.page,
+  () => route.query.page,
   async () => {
     try {
       isLoading.value = true
-      goods.value = await fetchGoods({ limit: pagination.limit, page: pagination.page })
-      router.push({ query: { ...route.query, page: pagination.page }})
+      goods.value = await fetchGoods(Number(route.query.page))
     } finally {
       isLoading.value = false
     }
@@ -133,19 +120,18 @@ watch(
       </template>
     </AppTableView>
     <AppPagination
-      v-model:limit="pagination.limit"
-      v-model:page="pagination.page"
-      v-model:total="pagination.total"
+      v-model:total="goods.total"
     />
   </div>
 </template>
 
 <style scoped>
 .goods {
-  height: 80vh;
+  min-height: 80vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 24px;
 }
 
 .name {

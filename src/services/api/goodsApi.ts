@@ -1,12 +1,12 @@
 import type { Good } from '@/types/good'
 import { instance } from './baseApi'
+import { GOODS_LIMIT } from '@/utils/constants'
 
 type GoodCreateModel = Omit<Good, 'id' | 'updatedAt' | 'createdAt' | 'createdBy'>
 type GoodUpdateModel = { id?: number } & GoodCreateModel
-type paramsModel = { limit: number; page: number }
 
-export async function fetchGoods(params: paramsModel) {
-  const { data } = await instance.get('/goods', { params: params })
+export async function fetchGoods(page: number) {
+  const { data } = await instance.get('/goods', { params: {page, limit: GOODS_LIMIT}})
   return data
 }
 

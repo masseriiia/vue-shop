@@ -61,7 +61,7 @@ const columns: AppTableViewColumnDefinition[] = [
   <div v-else class="categories">
     <AppTableView :cols="columns" :data="categories">
       <template #th-create>
-        <AppButton size="small" :to="{ name: 'goodsNew' }">Создать</AppButton>
+        <AppButton size="small" :to="{ name: 'categoriesNew' }">Создать</AppButton>
       </template>
       <template #row="{ rowData }">
         <td>{{ rowData.id }}</td>
