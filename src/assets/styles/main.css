@@ -1,7 +1,8 @@
-@import "fonts.css";
-@import "color.css";
+@import 'fonts.css';
+@import 'color.css';
 
-html, body {
+html,
+body {
   font-family: var(--font-family);
   background-color: var(--mint-bg);
   box-sizing: border-box;

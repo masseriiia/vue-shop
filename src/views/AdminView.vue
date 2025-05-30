@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import AppSidebar from '@/components/AppSidebar.vue';
-
+import AppSidebar from '@/components/AppSidebar.vue'
 </script>
 
 <template>
@@ -8,10 +7,10 @@ import AppSidebar from '@/components/AppSidebar.vue';
     <div class="container">
       <div class="admin-wrapper">
         <div>
-          <AppSidebar/>
+          <AppSidebar />
         </div>
         <div class="admin-content">
-          <RouterView/>
+          <RouterView />
         </div>
       </div>
     </div>
@@ -29,5 +28,4 @@ import AppSidebar from '@/components/AppSidebar.vue';
   grid-template-columns: 320px 1fr;
   gap: 24px;
 }
-
 </style>

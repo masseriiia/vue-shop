@@ -13,19 +13,21 @@ import CategoriesView from '@/views/CategoriesView.vue'
 import GoodsView from '@/views/GoodsView.vue'
 import CategoryFormView from '@/views/CategoryFormView.vue'
 import BannersView from '@/views/BannersView.vue'
+import GoodFormView from '@/views/GoodFormView.vue'
 
-const toast = useToast();
+const toast = useToast()
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    redirect: '/auth'
+    redirect: '/auth',
   },
   {
     path: '/auth',
     name: 'Auth',
-    component: AuthView
+    component: AuthView,
+    meta: { title: 'Авторизация' },
   },
   {
     path: '/admin',
@@ -36,75 +38,94 @@ const routes = [
       {
         path: 'categories',
         name: 'categories',
-        component: CategoriesView
+        component: CategoriesView,
+        meta: { title: 'Категории' },
       },
       {
         path: 'categories/new',
-        name: 'newCategory',
-        component: CategoryFormView
+        name: 'categoriesNew',
+        component: CategoryFormView,
+        meta: { title: 'Создание категории' },
       },
       {
-        path: 'categories/:id',
+        path: 'categories/:id(\\d+)',
         name: 'categoriesEdit',
-        component: CategoryFormView
+        component: CategoryFormView,
+        meta: { title: 'Редактирование категории' },
       },
       {
-        path: 'goods', 
+        path: 'goods',
         name: 'goods',
-        component: GoodsView
+        component: GoodsView,
+        meta: { title: 'Товары' },
       },
       {
-        path: 'banners', 
-        name: 'banners',
-        component: BannersView
+        path: 'goods/new',
+        name: 'goodsNew',
+        component: GoodFormView,
+        meta: { title: 'Создание товара' },
       },
-    ]
+      {
+        path: 'goods/:id(\\d+)',
+        name: 'goodsEdit',
+        component: GoodFormView,
+        meta: { title: 'Редактирование товара' },
+      },
+      {
+        path: 'banners',
+        name: 'banners',
+        component: BannersView,
+        meta: { title: 'Баннеры' },
+      },
+    ],
   },
   {
     path: '/catalog',
     name: 'Catalog',
-    component: CatalogView
+    component: CatalogView,
   },
   {
     path: '/profile',
     name: 'Profile',
     component: ProfileView,
-    meta: { requiresAuth: true }
+    meta: { title: 'Профиль', requiresAuth: true },
   },
   {
     path: '/shops',
     name: 'Shop',
-    component: ShopsView
+    component: ShopsView,
+    meta: { title: 'Магазины' },
   },
   {
     path: '/404',
     name: '404',
-    component: ErrorView
+    component: ErrorView,
+    meta: { title: 'Ошибка' },
   },
   {
     path: '/:pathMatch(.*)*',
-    component: ErrorView
-  }
+    component: ErrorView,
+  },
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 })
 
-router.beforeEach(async() => {
+router.beforeEach(async () => {
   const userStore = useCurrentUserStore()
-  const { isLoggedIn} = storeToRefs(userStore)
+  const { isLoggedIn } = storeToRefs(userStore)
 
-  if(isLoggedIn.value) return true
-  
-  if(getAuthToken()) {
+  if (isLoggedIn.value) return true
+
+  if (getAuthToken()) {
     try {
       await userStore.fetchCurrentUser()
-    } catch(error) {
-      if(error instanceof Error) {
+    } catch (error) {
+      if (error instanceof Error) {
         toast.error(error.message)
-      return {name: 'Auth'}
+        return { name: 'Auth' }
       }
     }
   }
@@ -112,14 +133,13 @@ router.beforeEach(async() => {
 
 router.beforeEach(async (to) => {
   const userStore = useCurrentUserStore()
-  const { isLoggedIn, isAdmin} = storeToRefs(userStore)
+  const { isLoggedIn, isAdmin } = storeToRefs(userStore)
 
   if (to.meta.requiresAuth && !isLoggedIn.value) {
     return { name: 'Auth' }
   }
 
   if (to.meta.requiresAdmin) {
-
     if (!isLoggedIn.value) {
       return { name: '404' }
     }

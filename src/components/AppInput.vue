@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 interface AppInputProps {
   type?: 'text' | 'password' | 'email' | 'number'
   disabled?: boolean
@@ -11,29 +10,34 @@ interface AppInputProps {
 
 withDefaults(defineProps<AppInputProps>(), {
   type: 'text',
-  disabled: false
+  disabled: false,
 })
 
-const model = defineModel<string | null>('data')
+const model = defineModel<string | number | null>()
 const tuched = defineModel<boolean>('tuched')
 
 const onBlur = () => {
   tuched.value = true
 }
-
 </script>
 
 <template>
-    <input @blur="onBlur" :disabled="disabled" :class="[{'input-error': error}, 'input']" v-model="model" :name="name" :type="type"/>
-    <div class="error">
-      <p v-show="error" class="error-text">
+  <input
+    @blur="onBlur"
+    :disabled="disabled"
+    :class="[{ 'input-error': error }, 'input']"
+    v-model="model"
+    :name="name"
+    :type="type"
+  />
+  <div class="error">
+    <p v-show="error" class="error-text">
       {{ error }}
     </p>
-    </div>
+  </div>
 </template>
 
 <style scoped>
-
 .input {
   padding: 12px 16px;
   border: 1px solid var(--ui-pale-gray);

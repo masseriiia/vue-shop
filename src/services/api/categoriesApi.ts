@@ -1,4 +1,4 @@
-import { instance } from "./baseApi";
+import { instance } from './baseApi'
 
 export async function fetchCategories() {
   const { data } = await instance.get('/categories')
@@ -6,7 +6,7 @@ export async function fetchCategories() {
 }
 
 export async function createCategory(title: string) {
-  const { data } = await instance.post('/categories', {name: title})
+  const { data } = await instance.post('/categories', { name: title })
   return data
 }
 
@@ -15,7 +15,7 @@ export async function deleteCategory(id: number) {
 }
 
 export async function updateCategory(id: number, title: string) {
-  await instance.put(`/categories/${id}`, {name: title})
+  await instance.put(`/categories/${id}`, { name: title })
 }
 
 export async function fetchCategoryById(id: number) {

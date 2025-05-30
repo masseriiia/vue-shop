@@ -4,24 +4,30 @@ import AppFooter from '@/components/AppFooter.vue'
 import { useCurrentUserStore } from './stores/currentUser'
 import { storeToRefs } from 'pinia'
 import AppLoading from './components/AppLoading.vue'
+import { watchEffect } from 'vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const userStore = useCurrentUserStore()
 const { isLoading } = storeToRefs(userStore)
 
+watchEffect(() => {
+  document.title = (route.meta.title as string) || 'Vue Shop'
+})
 </script>
 
 <template>
   <template v-if="isLoading">
-    <AppLoading  />
+    <AppLoading />
   </template>
   <template v-else>
     <div class="app-container">
       <AppHeader />
       <main class="main">
-        <RouterView/>
+        <RouterView />
       </main>
-    <AppFooter/>
-  </div>
+      <AppFooter />
+    </div>
   </template>
 </template>
 
@@ -35,5 +41,4 @@ const { isLoading } = storeToRefs(userStore)
 .main {
   flex: 1;
 }
-
 </style>

@@ -1,11 +1,9 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
-    <div class="banners">
-       <h1>Banners</h1> 
-    </div>
+  <div class="banners">
+    <h1>Banners</h1>
+  </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
