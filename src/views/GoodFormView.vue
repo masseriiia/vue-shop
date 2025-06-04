@@ -12,6 +12,8 @@ import type { Category } from '@/types/category'
 import { useToast } from 'vue-toastification'
 import { is404Error } from '@/utils/is404Error'
 import { getFormValidationErrors } from '@/utils/getFormValidationErrors'
+import AppDescription from '@/components/AppDescription.vue'
+import AppImageUploader from '@/components/AppImageUploader.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -23,6 +25,7 @@ const good = ref({
   oldPrice: null,
   photoUrl: '',
   categoryId: 0,
+  description: ''
 })
 const errors = ref<Record<string, string>>({})
 const isEditForm = computed(() => (route.params.id ? true : false))
@@ -60,6 +63,10 @@ async function preloadAndInitGoodsForm() {
 }
 
 preloadAndInitGoodsForm()
+
+function handleUploaderError(value: string) {
+  errors.value.photoUrl = value
+}
 
 const handleGoodSubmit = async (event: Event) => {
   event.preventDefault()
@@ -134,9 +141,7 @@ const handleGoodSubmit = async (event: Event) => {
       </AppFormLabel>
 
       <AppFormLabel text="Изображение">
-        <AppInput v-model="good.photoUrl" :error="errors?.photoUrl" />
-        <img v-if="good.photoUrl" class="good-form-image" :src="good.photoUrl" alt="Изображение" />
-        <div v-else class="good-form-image">Добавьте изображение</div>
+        <AppImageUploader v-model="good.photoUrl" :error="errors?.photoUrl" @error="handleUploaderError"/>
       </AppFormLabel>
 
       <AppFormLabel text="Категория">
@@ -147,6 +152,10 @@ const handleGoodSubmit = async (event: Event) => {
           :error="errors?.categoryId"
           placeholder="Выберете категорию"
         />
+      </AppFormLabel>
+
+      <AppFormLabel text="Описание">
+        <AppDescription v-model="good.description" />
       </AppFormLabel>
 
       <AppButton

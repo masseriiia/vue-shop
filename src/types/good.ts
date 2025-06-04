@@ -8,6 +8,7 @@ export interface Good {
   createdAt: string
   categoryId: number
   createdBy: number
+  description: string
 }
 
 export interface GoodsResponse {
