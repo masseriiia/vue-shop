@@ -52,7 +52,6 @@ async function handleImageUploader(event: Event) {
     if (error instanceof Error) {
       toast.error(error.message)
     }
-
   } finally {
     isLoading.value = false
   }

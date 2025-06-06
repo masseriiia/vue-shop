@@ -6,7 +6,7 @@ import router from './router'
 import 'vue-toastification/dist/index.css'
 import './assets/styles/main.css'
 import { QuillEditor } from '@vueup/vue-quill'
-import '@vueup/vue-quill/dist/vue-quill.snow.css';
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
 const app = createApp(App)
 

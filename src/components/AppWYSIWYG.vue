@@ -1,15 +1,34 @@
 <script setup lang="ts">
-import { QuillEditor } from '@vueup/vue-quill';
+import { ref } from 'vue';
+import { QuillEditor } from '@vueup/vue-quill'
 
 const model = defineModel<string>()
-
+let isFocused = ref(false)
 </script>
 
 <template>
-  <QuillEditor theme="snow" content-type="html" v-model:content="model" />
+  <div class="quill-wrapper" :class="{ focused: isFocused }">
+    <QuillEditor
+      theme="snow"
+      content-type="html"
+      v-model:content="model"
+      @focus="isFocused = true"
+      @blur="isFocused = false"
+    />
+  </div>
 </template>
 
 <style>
+.quill-wrapper {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  transition: border-color 0.2s ease;
+}
+
+.quill-wrapper.focused {
+  border-color: var(--ui-accent);
+}
+
 .ql-editor {
   min-height: 260px;
 }
@@ -21,4 +40,5 @@ const model = defineModel<string>()
 .ql-container.ql-snow {
   border-radius: 0 0 8px 8px;
 }
+
 </style>

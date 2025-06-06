@@ -25,7 +25,7 @@ const good = ref({
   oldPrice: null,
   photoUrl: '',
   categoryId: 0,
-  description: ''
+  description: '',
 })
 const errors = ref<Record<string, string>>({})
 const isEditForm = computed(() => (route.params.id ? true : false))
@@ -141,7 +141,11 @@ const handleGoodSubmit = async (event: Event) => {
       </AppFormLabel>
 
       <AppFormLabel text="Изображение">
-        <AppImageUploader v-model="good.photoUrl" :error="errors?.photoUrl" @error="handleUploaderError"/>
+        <AppImageUploader
+          v-model="good.photoUrl"
+          :error="errors?.photoUrl"
+          @error="handleUploaderError"
+        />
       </AppFormLabel>
 
       <AppFormLabel text="Категория">
