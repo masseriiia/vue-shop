@@ -12,8 +12,8 @@ import type { Category } from '@/types/category'
 import { useToast } from 'vue-toastification'
 import { is404Error } from '@/utils/is404Error'
 import { getFormValidationErrors } from '@/utils/getFormValidationErrors'
-import AppDescription from '@/components/AppDescription.vue'
 import AppImageUploader from '@/components/AppImageUploader.vue'
+import AppWYSIWYG from '@/components/AppWYSIWYG.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -155,7 +155,7 @@ const handleGoodSubmit = async (event: Event) => {
       </AppFormLabel>
 
       <AppFormLabel text="Описание">
-        <AppDescription v-model="good.description" />
+        <AppWYSIWYG v-model="good.description" />
       </AppFormLabel>
 
       <AppButton

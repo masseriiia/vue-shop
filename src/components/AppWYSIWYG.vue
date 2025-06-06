@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { QuillEditor } from '@vueup/vue-quill'
+import { QuillEditor } from '@vueup/vue-quill';
 
 const model = defineModel<string>()
+
 </script>
 
 <template>

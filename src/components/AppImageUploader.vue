@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { uploadFile } from '@/services/api/filesApi'
-import axios from 'axios'
 import { ref } from 'vue'
 import { useToast } from 'vue-toastification'
 import AppLoading from './AppLoading.vue'
+import { getFormValidationErrors } from '@/utils/getFormValidationErrors'
 
 interface AppInputProps {
   disabled?: boolean
@@ -24,9 +24,13 @@ const emit = defineEmits<{
 const model = defineModel<string>()
 const toast = useToast()
 const isLoading = ref(false)
+const progress = ref(0)
+const inputId = ref(`file-input-${self.crypto.randomUUID()}`)
 
 async function uploadAndSetFile(file: File) {
-  const data = await uploadFile(file)
+  const data = await uploadFile(file, (percent) => {
+    progress.value = percent
+  })
   model.value = 'https://shop-api.public.homekube.ru' + data.data.fileUrl
 }
 
@@ -38,12 +42,17 @@ async function handleImageUploader(event: Event) {
     isLoading.value = true
     await uploadAndSetFile(target.files[0])
   } catch (error) {
-    if (axios.isAxiosError(error) && error.status === 400 && error.response?.data.message) {
-      emit('error', error.response?.data.errors.file)
-      toast.error(error.response?.data.message)
-    } else if (error instanceof Error) {
+    const { validationErrors, validationErrorMessage } = getFormValidationErrors(error)
+
+    if (validationErrorMessage) {
+      emit('error', validationErrors.file)
+      toast.error(validationErrorMessage)
+    }
+
+    if (error instanceof Error) {
       toast.error(error.message)
     }
+
   } finally {
     isLoading.value = false
   }
@@ -51,24 +60,27 @@ async function handleImageUploader(event: Event) {
 </script>
 
 <template>
-  <div class="file-uploader">
-    <div class="file-wrapper">
+  <div class="image-uploader">
+    <div class="uploader-wrapper">
       <input
-        class="input-file"
+        class="uploader-input"
         type="file"
         @change="handleImageUploader"
         :disabled="disabled"
-        id="input-file"
+        :id="inputId"
       />
-      <label class="upload-label" for="input-file">
-        <AppLoading v-if="isLoading" />
+      <label class="uploader-label" :for="inputId">
+        <template v-if="isLoading">
+          <AppLoading class="uploader-loading" />
+          <p>{{ progress }} %</p>
+        </template>
 
         <div v-else>
-          <div v-if="model" class="upload-content">
-            <img :src="model" class="upload-image" alt="Изображение" />
+          <div v-if="model" class="uploader-content">
+            <img :src="model" class="uploader-image" alt="Изображение" />
           </div>
           <div v-else>
-            <p class="upload-text">Кликните чтобы добавить изображение</p>
+            <p class="uploader-text">Кликните чтобы добавить изображение</p>
           </div>
         </div>
       </label>
@@ -82,27 +94,32 @@ async function handleImageUploader(event: Event) {
   </div>
 </template>
 
-<style>
-.file-uploader {
+<style scoped>
+.image-uploader {
   width: 220px;
   height: 112px;
 }
 
-.file-wrapper {
+.uploader-wrapper {
   position: relative;
   cursor: pointer;
 }
 
-.input-file {
+.uploader-input {
   position: absolute;
   opacity: 0;
 }
 
-.upload-label {
+.uploader-loading {
+  height: 60px;
+}
+
+.uploader-label {
   margin-top: 10px;
   width: 220px;
   height: 112px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   border-radius: 8px;
@@ -111,18 +128,18 @@ async function handleImageUploader(event: Event) {
   transition: all 0.3s ease-in-out;
 }
 
-.upload-label:hover {
+.uploader-label:hover {
   background-color: var(--ui-light-gray);
   border: 1px solid var(--ui-accent);
 }
 
-.upload-content {
+.uploader-content {
   width: 220px;
   height: 112px;
   border-radius: 8px;
 }
 
-.upload-image {
+.uploader-image {
   width: 220px;
   height: 112px;
   object-fit: contain;
@@ -130,7 +147,7 @@ async function handleImageUploader(event: Event) {
   border: 1px solid var(--ui-accent);
 }
 
-.upload-text {
+.uploader-text {
   text-align: center;
   width: 127px;
 }
